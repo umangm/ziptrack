@@ -22,12 +22,12 @@ public class TransformGrammar {
 	}
 	
 	public static boolean isTerminal(String str){
-		return str.charAt(0) == '&';
+		return str.charAt(0) == '[';
 	}
 	
 	public static boolean isRule(String line){
-		//return line.matches("^[0-9]+ -> (([\\&]?[0-9]+\\s))*[\\&]?[0-9]+\\s+$");
-		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+//		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+		return line.matches("^[0-9]+ -> ((([\\[][0-9]+[\\]])|([0-9]+))\\s).*");
 	}
 	
 	public static Pair<String, ArrayList<String>> processRule(String line){
@@ -139,11 +139,11 @@ public class TransformGrammar {
 		}
 	}
 	
-	public static void demo(){
-		String traceFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/grammar_orig/boundedbuffer/grammar.shared.txt";
-		TransformGrammar.transformGrammar(traceFile, 2);
-	}
-	
+//	public static void demo(){
+//		String traceFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/grammar_orig/boundedbuffer/grammar.shared.txt";
+//		TransformGrammar.transformGrammar(traceFile, 2);
+//	}
+//	
 	public static void main(String args[]){
 		CmdOptions options = new GetOptions(args).parse();
 		TransformGrammar.transformGrammar(options.trace_file, 2);

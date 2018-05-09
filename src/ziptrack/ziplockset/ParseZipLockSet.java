@@ -152,7 +152,8 @@ public class ParseZipLockSet {
 	}
 	
 	public static boolean isRule(String line){
-		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+		return line.matches("^[0-9]+ -> ((([\\[][0-9]+[\\]])|([0-9]+))\\s).*");
+//		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
 	}
 	
 	public NonTerminalZipLockSet processRule(String line){
@@ -185,8 +186,9 @@ public class ParseZipLockSet {
 					nonTerminalMap.put(symb_str, (NonTerminalZipLockSet) symb);
 				}
 			}
-			else if(symb_str.matches("^[&]\\d+$")){
-				symb_str = symb_str.substring(1);
+//			else if(symb_str.matches("^[&]\\d+$")){
+			else if(symb_str.matches("^[\\[]\\d+[\\]]$")){
+				symb_str = symb_str.substring(1, symb_str.length()-1);
 				if(!terminalMap.containsKey(symb_str)){
 					throw new IllegalArgumentException("Terminal symbol not found : " + symb_str);
 				}

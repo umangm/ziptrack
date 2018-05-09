@@ -23,27 +23,27 @@ public class ParseZipMetaInfo {
 		eMap.put("J", EventType.JOIN);
 		return eMap;
 	}
-	
+
 	public HashMap<String, Integer> lockMap;
 	public HashMap<String, Integer> threadMap;
 	public HashMap<String, Integer> variableMap;
-	
+
 	public HashMap<Integer, String> threadNames;
 	public HashMap<Integer, String> lockNames;
 	public HashMap<Integer, String> variableNames;
-	
+
 	public int hbObjectIndex;
 	public int variableIndex;
-	
+
 	public HashMap<String, TerminalZipMetaInfo> terminalMap;
 	public HashMap<String, NonTerminalZipMetaInfo> nonTerminalMap;
 	public String eventSplitBy;
-	
-	
+
+
 	public ParseZipMetaInfo(){
 		init();
 	}
-	
+
 	public void init(){
 		lockMap = new HashMap<String, Integer> ();
 		threadMap = new HashMap<String, Integer> ();
@@ -51,15 +51,15 @@ public class ParseZipMetaInfo {
 		terminalMap = new HashMap<String, TerminalZipMetaInfo> ();
 		nonTerminalMap = new HashMap<String, NonTerminalZipMetaInfo> ();
 		eventSplitBy = "|";
-		
+
 		hbObjectIndex = 0;
 		variableIndex = 0;
-		
+
 		threadNames = new HashMap<Integer, String> ();
 		lockNames = new HashMap<Integer, String> ();
 		variableNames = new HashMap<Integer, String> ();
 	}
-	
+
 	private static EventType getEventTypeFromText(String eTypeText) throws CannotParseException{
 		if (eventTypeMap.containsKey(eTypeText)){
 			return eventTypeMap.get(eTypeText);
@@ -68,12 +68,12 @@ public class ParseZipMetaInfo {
 			throw new CannotParseException(eTypeText);
 		}
 	}
-	
+
 	public void processEvent(String line){
 		String[] splitArray = line.split("[|]");
 		String idx = splitArray[0];
 		String[] eInfo = splitArray[1].split(",");
-		
+
 		String threadName = eInfo[0];
 		int t = -1;
 		if(!threadMap.containsKey(threadName)){
@@ -85,7 +85,7 @@ public class ParseZipMetaInfo {
 		else{
 			t = threadMap.get(threadName);
 		}
-		
+
 		EventType eType = null;
 		try{
 			eType = getEventTypeFromText(eInfo[1]);
@@ -94,10 +94,10 @@ public class ParseZipMetaInfo {
 			System.out.println("Unknown type for " + e.getLine());
 			e.printStackTrace();
 		}
-		
+
 		String decorName = eInfo[2];
 		int decor = -1;
-		
+
 		if (eType.isLockType()){
 			if(!lockMap.containsKey(decorName)){
 				decor = hbObjectIndex;
@@ -134,7 +134,7 @@ public class ParseZipMetaInfo {
 		else{
 			throw new IllegalArgumentException("Unkown event type " + eType.toString());
 		}
-			
+
 		if(terminalMap.containsKey(idx)){
 			throw new IllegalArgumentException("Event already processed ? Terminal-" + idx);
 		}
@@ -143,7 +143,7 @@ public class ParseZipMetaInfo {
 			terminalMap.put(idx, terminal);	
 		}
 	}
-	
+
 	public void buildMap(String mapFile){
 		try (Stream<String> stream = Files.lines(Paths.get(mapFile))) {
 			stream.forEach(s->{processEvent(s);});
@@ -151,12 +151,13 @@ public class ParseZipMetaInfo {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean isRule(String line){
-		//return line.matches("^[0-9]+ -> (([\\&]?[0-9]+\\s))*[\\&]?[0-9]+\\s+$");
-		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+		//		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+		return line.matches("^[0-9]+ -> ((([\\[][0-9]+[\\]])|([0-9]+))\\s).*");
+
 	}
-	
+
 	public NonTerminalZipMetaInfo processRule(String line){
 		String[] parts = line.split(" -> ");
 		String nt_name = parts[0];
@@ -168,11 +169,11 @@ public class ParseZipMetaInfo {
 		else{
 			nt = nonTerminalMap.get(nt_name);
 		}
-		
-		
+
+
 		String[] rule_str_lst = parts[1].split("\\s+");
 		ArrayList<SymbolZipMetaInfo> rule = new ArrayList<SymbolZipMetaInfo> ();
-		
+
 		boolean allTerminals = true;
 
 		for(String symb_str : rule_str_lst){
@@ -180,7 +181,7 @@ public class ParseZipMetaInfo {
 				throw new IllegalArgumentException("Symbol length is non-positive " + symb_str);
 			}
 			SymbolZipMetaInfo symb = null;
-			
+
 			if(symb_str.matches("^\\d+$")){
 				allTerminals = false;
 				if(nonTerminalMap.containsKey(symb_str)){
@@ -191,8 +192,10 @@ public class ParseZipMetaInfo {
 					nonTerminalMap.put(symb_str, (NonTerminalZipMetaInfo) symb);
 				}
 			}
-			else if(symb_str.matches("^[&]\\d+$")){
-				symb_str = symb_str.substring(1);
+			//			else if(symb_str.matches("^[&]\\d+$")){
+			else if(symb_str.matches("^[\\[]\\d+[\\]]$")){
+//				symb_str = symb_str.substring(1);
+				symb_str = symb_str.substring(1, symb_str.length()-1);
 				if(!terminalMap.containsKey(symb_str)){
 					throw new IllegalArgumentException("Terminal symbol not found : " + symb_str);
 				}
@@ -203,14 +206,14 @@ public class ParseZipMetaInfo {
 			else{
 				throw new IllegalArgumentException("Absurd symbol : " + symb_str);
 			}
-			
+
 			rule.add(symb);
 			nt.setRule(rule);
 			nt.allTerminals = allTerminals;
 		}
 		return nt;
 	}
-	
+
 	public ArrayList<NonTerminalZipMetaInfo> buildGrammar(String traceFile){
 		ArrayList<NonTerminalZipMetaInfo> cfg = null;
 		try (Stream<String> stream = Files.lines(Paths.get(traceFile))) {
@@ -218,17 +221,17 @@ public class ParseZipMetaInfo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		System.out.println(nonTerminalMap.keySet());
-//		System.out.println("===== CFG printing done ==");
+		//		System.out.println(nonTerminalMap.keySet());
+		//		System.out.println("===== CFG printing done ==");
 		return cfg;
 	}
-	
+
 	public ArrayList<NonTerminalZipMetaInfo> parse(String mapFile, String traceFile){
 		this.buildMap(mapFile);
-//		System.out.println(this.terminalMap);
+		//		System.out.println(this.terminalMap);
 		return this.buildGrammar(traceFile);
 	}
-	
+
 	public static void main(String args[]){
 		ParseZipMetaInfo p = new ParseZipMetaInfo();
 		String mapFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/bin/bubblesort/map.shared.txt";
@@ -238,18 +241,18 @@ public class ParseZipMetaInfo {
 			String tName = p.threadNames.get(term.getThread());
 			String decorName = term.getType().isAccessType()?
 					p.variableNames.get(term.getDecor()):
-					(
-						term.getType().isExtremeType()?
-						p.threadNames.get(term.getDecor()):
-					p.lockNames.get(term.getDecor())
-					);
-			System.out.println(name + " -> " + term.toEventString(tName, decorName));
-			});
+						(
+								term.getType().isExtremeType()?
+										p.threadNames.get(term.getDecor()):
+											p.lockNames.get(term.getDecor())
+								);
+					System.out.println(name + " -> " + term.toEventString(tName, decorName));
+		});
 		slp.forEach(nt -> 	{
 			System.out.print(nt.getName() + " => ");
 			nt.printRule();
 			System.out.print("\n");
-							}
-		);
+		}
+				);
 	}
 }
