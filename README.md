@@ -37,12 +37,9 @@ This command creates binary log files in `/path/to/base_folder/sub_folder`.
 ### Compressing traces:
 
 1. First convert the bin files into a readable format. 
-For this, we use [RAPID](https://github.com/umangm/rapid).
-Download and compile RAPID. You can use the `build.xml` file provided for this.
-
-2. Now run the following command:
+For this, run the following command:
 ```
-java -classpath /path/to/rapid/bin:/path/to/rapid/lib/* PrintTrace -p=/path/to/base_folder/sub_folder -f=rv > /path/to/base_folder/sub_folder/trace.txt 
+java -classpath /path/to/ziptrack/bin:/path/to/rapid/lib/* PrintTrace -p=/path/to/base_folder/sub_folder -f=rv > /path/to/base_folder/sub_folder/trace.txt 
 ```
 This command creates two files: `/path/to/base_folder/sub_folder/trace.txt` and `/path/to/base_folder/sub_folder/map.shared.txt`
 
