@@ -11,13 +11,14 @@
     <path id="public_ziptrack.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/commons-cli-1.3.1.jar"/>
-        <pathelement location="lib/rvparse.jar"/>
+        <pathelement location="lib/lz4-1.3-SNAPSHOT.jar"/>
         <pathelement location="lib/print.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -70,6 +71,12 @@
     <target name="ZipHB">
         <java classname="ZipHB" failonerror="true" fork="yes">
             <arg line="-m /Users/umang/Repositories/compressedtraces/example/rebuttal/bin_files/Test1/map.all.txt -t /Users/umang/Repositories/ziptrack/public/ziptrack/v2.txt"/>
+            <classpath refid="public_ziptrack.classpath"/>
+        </java>
+    </target>
+    <target name="PrintTrace (1)">
+        <java classname="PrintTrace" failonerror="true" fork="yes">
+            <arg line="-p=/Users/umang/Repositories/ziptrack/testing/array"/>
             <classpath refid="public_ziptrack.classpath"/>
         </java>
     </target>
