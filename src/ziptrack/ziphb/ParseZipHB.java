@@ -27,6 +27,9 @@ public class ParseZipHB {
 	public HashMap<String, Integer> lockMap;
 	public HashMap<String, Integer> threadMap;
 	public HashMap<String, Integer> variableMap;
+	public HashMap<String, TerminalZipHB> terminalMap;
+	public HashMap<String, NonTerminalZipHB> nonTerminalMap;
+	public String eventSplitBy;
 	
 	public HashMap<Integer, String> threadNames;
 	public HashMap<Integer, String> lockNames;
@@ -34,11 +37,6 @@ public class ParseZipHB {
 	
 	public int hbObjectIndex;
 	public int variableIndex;
-	
-	public HashMap<String, TerminalZipHB> terminalMap;
-	public HashMap<String, NonTerminalZipHB> nonTerminalMap;
-	public String eventSplitBy;
-	
 	
 	public ParseZipHB(){
 		init();
