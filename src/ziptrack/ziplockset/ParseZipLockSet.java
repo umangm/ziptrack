@@ -220,28 +220,4 @@ public class ParseZipLockSet {
 		this.buildMap(mapFile);
 		return this.buildGrammar(traceFile);
 	}
-	
-	public static void main(String args[]){
-		ParseZipLockSet p = new ParseZipLockSet();
-		String mapFile = "/Users/umang/Repositories/compressedtraces/prototype/python/examples/1/mapfiles/airlinetickets.map.txt";
-		String traceFile = "/Users/umang/Repositories/compressedtraces/prototype/python/examples/1/tracefiles/airlinetickets.comp.txt";
-		ArrayList<NonTerminalZipLockSet> slp = p.parse(mapFile, traceFile);
-		p.terminalMap.forEach((name, term) -> {
-			String tName = p.threadNames.get(term.getThread());
-			String decorName = term.getType().isAccessType()?
-					p.variableNames.get(term.getDecor()):
-					(
-						term.getType().isExtremeType()?
-						p.threadNames.get(term.getDecor()):
-					p.lockNames.get(term.getDecor())
-					);
-			System.out.println(name + " -> " + term.toEventString(tName, decorName));
-			});
-		slp.forEach(nt -> 	{
-			System.out.print(nt.getName() + " => ");
-			nt.printRule();
-			System.out.print("\n");
-							}
-		);
-	}
 }

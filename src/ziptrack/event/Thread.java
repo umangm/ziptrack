@@ -1,6 +1,6 @@
 package ziptrack.event;
 
-public class Thread extends HBObject {
+public class Thread extends Decoration {
 	
 	public static int threadCountTracker = 0;
 

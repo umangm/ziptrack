@@ -192,9 +192,9 @@ public class ParseZipMetaInfo {
 					nonTerminalMap.put(symb_str, (NonTerminalZipMetaInfo) symb);
 				}
 			}
-			//			else if(symb_str.matches("^[&]\\d+$")){
+			// else if(symb_str.matches("^[&]\\d+$")){
 			else if(symb_str.matches("^[\\[]\\d+[\\]]$")){
-//				symb_str = symb_str.substring(1);
+				// symb_str = symb_str.substring(1);
 				symb_str = symb_str.substring(1, symb_str.length()-1);
 				if(!terminalMap.containsKey(symb_str)){
 					throw new IllegalArgumentException("Terminal symbol not found : " + symb_str);
@@ -221,38 +221,11 @@ public class ParseZipMetaInfo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//		System.out.println(nonTerminalMap.keySet());
-		//		System.out.println("===== CFG printing done ==");
 		return cfg;
 	}
 
 	public ArrayList<NonTerminalZipMetaInfo> parse(String mapFile, String traceFile){
 		this.buildMap(mapFile);
-		//		System.out.println(this.terminalMap);
 		return this.buildGrammar(traceFile);
-	}
-
-	public static void main(String args[]){
-		ParseZipMetaInfo p = new ParseZipMetaInfo();
-		String mapFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/bin/bubblesort/map.shared.txt";
-		String traceFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/bin/bubblesort/grammar.shared.txt";
-		ArrayList<NonTerminalZipMetaInfo> slp = p.parse(mapFile, traceFile);
-		p.terminalMap.forEach((name, term) -> {
-			String tName = p.threadNames.get(term.getThread());
-			String decorName = term.getType().isAccessType()?
-					p.variableNames.get(term.getDecor()):
-						(
-								term.getType().isExtremeType()?
-										p.threadNames.get(term.getDecor()):
-											p.lockNames.get(term.getDecor())
-								);
-					System.out.println(name + " -> " + term.toEventString(tName, decorName));
-		});
-		slp.forEach(nt -> 	{
-			System.out.print(nt.getName() + " => ");
-			nt.printRule();
-			System.out.print("\n");
-		}
-				);
 	}
 }

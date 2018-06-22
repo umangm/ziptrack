@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import ziptrack.event.EventType;
-import ziptrack.util.Interval;
 
 public class TerminalZipHB extends SymbolZipHB {
 
@@ -242,7 +241,7 @@ public class TerminalZipHB extends SymbolZipHB {
 	}
 
 	@Override
-	public void computeData(boolean stopAfterFirstRace, boolean sanityCheck) {
+	public void computeData() {
 		this.computeAfterFirst();
 		this.computeBeforeLast();
 		this.computeAfterReads();
@@ -250,12 +249,6 @@ public class TerminalZipHB extends SymbolZipHB {
 		this.computeAfterWrites();
 		this.computeBeforeWrites();
 		this.computeRace();
-
-		if(sanityCheck){
-			this.len = 1;
-			crossRace = false;
-			setRange = new HashMap<Integer, HashSet<Interval>> ();
-		}
 	}
 
 	@Override

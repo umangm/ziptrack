@@ -69,19 +69,6 @@ public abstract class SymbolZipLockSet extends Symbol {
 	private void computeRelevantThreads(){
 		this.relevantThreads = new HashSet<Integer> ();
 		this.relevantThreads.addAll(this.threadCount.keySet());
-//		for (HashMap.Entry<Integer, Integer> entry : this.threadCount.entrySet()){
-//			int t = entry.getKey();
-//			for(NonTerminalLockSet p : this.parents){
-//				if(p.relevantThreads.contains(t)){
-//					this.relevantThreads.add(t);
-//					break;
-//				}
-//				if(p.threadCount.get(t) >= 2){
-//					this.relevantThreads.add(t);
-//					break;
-//				}
-//			}
-//		}
 	}
 	
 	private void computeRelevantLocks(){
@@ -117,5 +104,5 @@ public abstract class SymbolZipLockSet extends Symbol {
 	protected abstract void countLocks();
 	protected abstract void countVariables();
 	
-	public abstract void computeData(boolean stopAfterFirstRace);
+	public abstract void computeData();
 }

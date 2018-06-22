@@ -5,7 +5,6 @@ import print.engine.ZipTrackPrintEngine;
 public class PrintTrace {
 
 	public PrintTrace() {
-
 	}
 	
 	public static void main(String[] args) {	

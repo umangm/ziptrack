@@ -1,12 +1,9 @@
 package ziptrack.event;
 
+// Abstract class for Lock, Variable and Thread.
 public abstract class Decoration {
 	protected int id;
 	protected String name;
-	
-//	public int getId() {
-//		return this.id;
-//	}
 
 	public String getName() {
 		return this.name;

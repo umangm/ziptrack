@@ -1,6 +1,17 @@
 package ziptrack.event;
 
-
+// Event class.
+// An event is a tuple (id, type, thread, decor).
+// 'id' is a unique identifier.
+// 'type' corresponds to one of read/write/acquire/release/fork/join.
+// 'thread' is the thread performing the event.
+// 'decor' is the additional decoration:
+// (a) when 'type' is read/write, decor corresponds to the memory 
+// location being read from/written to.
+// (b) when 'type' is acquire/release, decor corresponds to the lock 
+// begin acquire or released.
+// (c) when 'type' is fork/join, decor corresponds to the child 
+// thread forked or joined by 'thread'.
 public class Event {
 	//Data for Event
 	public static Long eventCountTracker = (long) 0;
@@ -30,33 +41,6 @@ public class Event {
 		this.updateEvent(tp, th, d);
 	}
 
-//	public void copyFrom(Event fromEvent){
-//		this.id = fromEvent.getId();
-//		this.auxId = fromEvent.getAuxId();
-//		this.locId = fromEvent.getLocId();
-//		this.name = fromEvent.getName();
-//		this.type = fromEvent.getType();
-//		this.thread = fromEvent.getThread();
-//		
-//		//Data for Acquire/Release
-//		if(this.getType().isLockType()){
-//			this.lock = fromEvent.getLock();
-//			this.setReadVarSet(fromEvent.getReadVarSet());
-//			this.setWriteVarSet(fromEvent.getWriteVarSet());
-//		}
-//		
-//		//Data for Read/Write
-//		if(this.getType().isAccessType()){
-//			this.variable = fromEvent.getVariable();
-//			this.setLockSet(fromEvent.getLockSet());
-//		}
-//		
-//		//Data for Fork/Join
-//		if(this.getType().isExtremeType()){
-//			this.target = fromEvent.getTarget();
-//		}
-//	}
-	
 	public Long getId() {
 		return this.id;
 	}

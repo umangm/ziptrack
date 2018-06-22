@@ -210,18 +210,5 @@ public class Parse {
 		this.buildMap(mapFile);
 		return this.buildGrammar(traceFile);
 	}
-	
-	public static void main(String args[]){
-		Parse p = new Parse();
-		String mapFile = "/Users/umang/Repositories/compressedtraces/prototype/python/examples/1/mapfiles/airlinetickets.map.txt";
-		String traceFile = "/Users/umang/Repositories/compressedtraces/prototype/python/examples/1/tracefiles/airlinetickets.comp.txt";
-		ArrayList<NonTerminal> slp = p.parse(mapFile, traceFile);
-		p.terminalMap.forEach((name, term) -> {System.out.println(name + " -> " + term.getEvent().toString());});
-		slp.forEach(nt -> 	{
-			System.out.print(nt.getName() + " => ");
-			nt.printRule();
-			System.out.print("\n");
-							}
-		);
-	}
+
 }

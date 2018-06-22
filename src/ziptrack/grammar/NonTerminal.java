@@ -2,6 +2,10 @@ package ziptrack.grammar;
 
 import java.util.ArrayList;
 
+// A non-terminal in the context free grammar.
+// Since ZipTrack analyzes SLPs (a form of context free grammar),
+// every non-terminal has a unique production rule,
+// denoted by the data member 'rule'.
 public class NonTerminal extends Symbol {
 	
 	protected ArrayList<Symbol> rule;

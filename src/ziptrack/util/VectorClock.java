@@ -39,14 +39,6 @@ public class VectorClock {
 		return this.clock.toString();
 	}
 
-	/* public void inc(int ind) {
-		if(! ((ind < this.dim) && (ind >= 0)) ){
-			throw new IllegalArgumentException("You are attempting to access the vector clock with an illegal index");
-		}
-		int new_clock_val = this.clock.get(ind) + 1;
-		this.clock.set(ind, (Integer) new_clock_val);
-	} */
-
 	public boolean isZero() {
 		boolean itIsZero = true;
 		for (int ind = 0; ind < this.dim; ind++) {

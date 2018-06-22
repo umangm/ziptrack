@@ -1,6 +1,6 @@
 package ziptrack.event;
 
-public class Lock extends HBObject {
+public class Lock extends Decoration {
 	
 	public static int lockCountTracker = 0;
 

@@ -38,10 +38,6 @@ public enum EventType {
 	public boolean isExtremeType() {
 		return this.isFork() || this.isJoin();
 	}
-
-	/* public boolean isSyncType() {
-		return isLockType() || isExtremeType();
-	} */
 	
 	public boolean isDummyType(){
 		return this.ordinal() == DUMMY.ordinal();

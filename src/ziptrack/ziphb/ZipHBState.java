@@ -93,7 +93,6 @@ public class ZipHBState {
 		return arr.get(index);
 	}
 
-
 	protected int checkAndAddLock(int l){
 		if(!lockToIndex.containsKey(l)){
 			//System.err.println("New lock found " + this.numLocks);
@@ -135,11 +134,6 @@ public class ZipHBState {
 		int lIndex = checkAndAddLock(l);
 		return getVectorClockFrom1DArray(arr, lIndex);
 	}
-
-	//	public VectorClock getVectorClock_Variable(ArrayList<VectorClock> arr, int v) {
-	//		int vIndex = checkAndAddVariable(v);
-	//		return getVectorClockFrom1DArray(arr, vIndex);
-	//	}
 
 	public void printThreadClock(){
 		ArrayList<VectorClock> printVC = new ArrayList<VectorClock>();
@@ -387,8 +381,6 @@ public class ZipHBState {
 		}
 		return relBefWrite;
 	}
-
-
 
 	public static HashSet<Integer> computeAfter(HashSet<Integer> relevantThreadsOrLocks, HashMap<Integer, VectorClock> lastVC, VectorClock VC){
 		VectorClock last_vc;

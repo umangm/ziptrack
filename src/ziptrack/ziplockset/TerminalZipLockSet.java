@@ -42,7 +42,6 @@ public class TerminalZipLockSet extends SymbolZipLockSet {
 		return "T-" + this.name;
 	}
 
-
 	@Override
 	protected void countThreads() {
 		this.threadCount = new HashMap<Integer, Integer> ();
@@ -66,7 +65,7 @@ public class TerminalZipLockSet extends SymbolZipLockSet {
 	}
 
 	@Override
-	public void computeData(boolean stopAfterFirstRace) {
+	public void computeData() {
 		this.violationFound = false;
 		this.relevantWrittenVars = new HashSet<Integer> ();
 		this.relevantOpenAcquires = new HashMap<Integer, HashMap<Integer, Integer>> ();

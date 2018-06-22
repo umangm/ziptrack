@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import ziptrack.util.Interval;
 import ziptrack.util.VectorClock;
 
 public class NonTerminalZipHB extends SymbolZipHB {
@@ -249,7 +248,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 			HashSet<Integer> set2 = map2.get(x);
 			if(Collections.disjoint(set1, set2)){
 				hasRace = true;
-//				System.out.println("Race-WW : x = " + x + ", set1 = " + set1 + ", set2 = " + set2);
 			}
 
 		}
@@ -264,7 +262,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 				HashSet<Integer> set2 = map2.get(x);
 				if(Collections.disjoint(set1, set2)){
 					hasRace = true;
-//					System.out.println("Race-RW : x = " + x + ", t = " + t + ", set1 = " + set1 + ", set2 = " + set2);
 				}
 			}
 		}
@@ -279,7 +276,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 				HashSet<Integer> set2 = map2.get(t).get(x);
 				if(Collections.disjoint(set1, set2)){
 					hasRace = true;
-//					System.out.println("Race-WR : x = " + x + ", t = " + t + ", set1 = " + set1 + ", set2 = " + set2);
 				}
 			}
 		}
@@ -320,7 +316,7 @@ public class NonTerminalZipHB extends SymbolZipHB {
 		return hasRace_A;
 	}
 
-	private void initialize_data(boolean sanityCheck){
+	private void initialize_data(){
 		this.relevantAfterFirst = new HashMap<Integer, HashSet<Integer>> ();
 		this.relevantBeforeLast = new HashMap<Integer, HashSet<Integer>> ();
 		this.relevantAfterReads = new HashMap<Integer, HashMap<Integer, HashSet<Integer>>> ();
@@ -328,12 +324,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 		this.relevantAfterWrites = new HashMap<Integer, HashSet<Integer>> ();
 		this.relevantBeforeWrites = new HashMap<Integer, HashSet<Integer>> ();
 		hasRace = false;
-
-		if(sanityCheck){
-			len = 0;
-			crossRace = false;
-			setRange = new HashMap<Integer, HashSet<Interval>> ();
-		}
 	}
 
 	private void setIntermediateRelevantVariables(){
@@ -366,16 +356,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 		for(int idx = 0; idx < this.rule.size(); idx ++){
 			this.intermediateRelevantThreadsOrLocks.addAll(this.rule.get(idx).relevantThreadsOrLocks);
 		}
-		/*
-		HashSet<Integer> atLeastTwo = new HashSet<Integer> ();
-		for (HashMap.Entry<Integer, Integer> entry : this.threadOrLockCount.entrySet())
-		{
-			if(entry.getValue() >= 2){
-				atLeastTwo.add(entry.getKey());
-			}
-		}
-		this.intermediateRelevantThreadsOrLocks.retainAll(atLeastTwo);
-		 */
 		this.intermediateRelevantThreadsOrLocks.addAll(this.relevantThreadsOrLocks);
 	}
 
@@ -386,9 +366,8 @@ public class NonTerminalZipHB extends SymbolZipHB {
 		}
 	}
 
-	/*
-	private void computeData_mix(boolean stopAfterFirstRace, boolean sanityCheck){
-		this.initialize_data(sanityCheck);
+	private void computeData_mix(){
+		this.initialize_data();
 		HashMap<Integer, HashSet<Integer>> newAfterFirst;
 		HashMap<Integer, HashSet<Integer>> newBeforeLast;
 		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> newAfterReads;
@@ -399,105 +378,6 @@ public class NonTerminalZipHB extends SymbolZipHB {
 
 		HashSet<Integer> relevantWritesCopy = new HashSet<Integer>(this.relevantWrites);
 		HashMap<Integer, HashSet<Integer>> relevantReadsCopy = new HashMap<Integer, HashSet<Integer>>(this.relevantReads);
-		HashSet<Integer> ThLk = this.intermediateRelevantThreadsOrLocks;
-		HashSet<Integer> RelWrite = this.intermediateRelevantWrites;
-		HashMap<Integer, HashSet<Integer>> RelThRd = this.intermediateRelevantReads;
-//		this.relevantWrites = RelWrite;
-//		this.relevantReads = RelThRd;
-
-
-		for(int idx = 0; idx < rule_size; idx ++){
-			SymbolHBSets symb = this.rule.get(idx);
-
-			this.hasRace = getRace(this, symb);
-			if(this.hasRace){
-				System.out.println("Race found : NT " + this.getName() + " child#" + symb.getName());
-				if(stopAfterFirstRace){
-					break;
-				}
-			}
-
-			newAfterFirst = getAfterFirst(this, symb, ThLk);
-			newBeforeLast = getBeforeLast(this, symb, ThLk);
-			newAfterReads = getAfterReads(this, symb, ThLk, RelThRd);
-			newBeforeReads = getBeforeReads(this, symb, ThLk, RelThRd);
-			newAfterWrites = getAfterWrites(this, symb, ThLk, RelWrite);
-			newBeforeWrites = getBeforeWrites(this, symb, ThLk, RelWrite);
-
-			this.relevantAfterFirst = newAfterFirst;
-			this.relevantBeforeLast = newBeforeLast;
-			this.relevantAfterReads = newAfterReads;
-			this.relevantBeforeReads = newBeforeReads;
-			this.relevantAfterWrites = newAfterWrites;
-			this.relevantBeforeWrites = newBeforeWrites;
-
-		}
-		this.intermediateRelevantThreadsOrLocks= null;
-		this.intermediateRelevantReads = null;
-		this.intermediateRelevantWrites = null;
-
-		this.relevantReads = relevantReadsCopy;
-		this.relevantWrites = relevantWritesCopy;
-
-		//		this.destroyCriticalChldren();
-	}
-	 */
-
-	/*
-	private static HashMap<Integer, HashSet<Integer>> filter(HashMap<Integer, HashSet<Integer>> orig_map, HashSet<Integer> key_set, HashSet<Integer> range_set){
-		HashMap<Integer, HashSet<Integer>> filtered_map = new HashMap<Integer, HashSet<Integer>> ();
-		for(int k : orig_map.keySet()){
-			if(key_set.contains(k)){
-				orig_map.get(k).retainAll(range_set);
-				if(!orig_map.get(k).isEmpty()){
-					filtered_map.put(k, orig_map.get(k));
-				}
-			}
-		}
-		return filtered_map;
-	}
-	*/
-
-	/*
-	private static HashMap<Integer, HashMap<Integer, HashSet<Integer>>> filter2(HashMap<Integer, HashMap<Integer, HashSet<Integer>>> orig_map, HashMap<Integer, HashSet<Integer>> key_set, HashSet<Integer> range_set){
-		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> filtered_map = new HashMap<Integer, HashMap<Integer, HashSet<Integer>>> ();
-		for(int k1 : orig_map.keySet()){
-			if(key_set.containsKey(k1)){
-				for(int k2: orig_map.get(k1).keySet()){
-					if(key_set.get(k1).contains(k2)){
-						orig_map.get(k1).get(k2).retainAll(range_set);
-						if(!orig_map.get(k1).get(k2).isEmpty()){
-							if(!filtered_map.containsKey(k1)){
-								filtered_map.put(k1, new HashMap<> ());
-							}
-							filtered_map.get(k1).put(k2, orig_map.get(k1).get(k2));
-						}
-					}
-				}
-			}
-		}
-		return filtered_map;
-	}
-	*/
-
-	private void computeData_mix(boolean stopAfterFirstRace, boolean sanityCheck){
-		this.initialize_data(sanityCheck);
-		HashMap<Integer, HashSet<Integer>> newAfterFirst;
-		HashMap<Integer, HashSet<Integer>> newBeforeLast;
-		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> newAfterReads;
-		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> newBeforeReads;
-		HashMap<Integer, HashSet<Integer>> newAfterWrites;
-		HashMap<Integer, HashSet<Integer>> newBeforeWrites;
-		int rule_size = this.rule.size();
-
-		HashSet<Integer> relevantWritesCopy = new HashSet<Integer>(this.relevantWrites);
-		HashMap<Integer, HashSet<Integer>> relevantReadsCopy = new HashMap<Integer, HashSet<Integer>>(this.relevantReads);
-
-		//		HashSet<Integer> ThLk = this.intermediateRelevantThreadsOrLocks;
-		//		HashSet<Integer> RelWrite = this.intermediateRelevantWrites;
-		//		HashMap<Integer, HashSet<Integer>> RelThRd = this.intermediateRelevantReads;
-		//		this.relevantWrites = RelWrite;
-		//		this.relevantReads = RelThRd;
 
 		this.relevantReads = new HashMap<> (this.rule.get(0).relevantReads);
 		this.relevantWrites = new HashSet<> (this.rule.get(0).relevantWrites);
@@ -516,29 +396,10 @@ public class NonTerminalZipHB extends SymbolZipHB {
 
 		for(int idx = 1; idx < rule_size; idx ++){
 			SymbolZipHB symb = this.rule.get(idx);
-			
-//			System.out.println(this.getName() + "," + symb.getName());
-//			
-//			System.out.println("# relevantAfterFirst = " + this.relevantAfterFirst);
-//			System.out.println("@ relevantAfterFirst =" + symb.relevantAfterFirst);
-//			System.out.println("# relevantBeforeLast =" + this.relevantBeforeLast);
-//			System.out.println("@ relevantBeforeLast = " + symb.relevantBeforeLast);
-//			System.out.println("# relevantAfterReads = " + this.relevantAfterReads);
-//			System.out.println("@ relevantAfterReads = " + symb.relevantAfterReads);
-//			System.out.println("# relevantBeforeReads = " + this.relevantBeforeReads);
-//			System.out.println("@ relevantBeforeReads = " + symb.relevantBeforeReads);
-//			System.out.println("# relevantAfterWrites = " + this.relevantAfterWrites);
-//			System.out.println("@ relevantAfterWrites = " + symb.relevantAfterWrites);
-//			System.out.println("# relevantBeforeWrites = " + this.relevantBeforeWrites);
-//			System.out.println("@ relevantBeforeWrites =" + symb.relevantBeforeWrites);
-//			System.out.println("");
 
 			this.hasRace = getRace(this, symb, occuringWrites, occuringReads);
 			if(this.hasRace){
-//				System.out.println("Race found : NT " + this.getName() + " child#" + symb.getName());
-				if(stopAfterFirstRace){
-					break;
-				}
+				break;
 			}
 
 			occuringWrites.addAll(symb.writeCount.keySet());
@@ -570,28 +431,9 @@ public class NonTerminalZipHB extends SymbolZipHB {
 
 		this.relevantReads = relevantReadsCopy;
 		this.relevantWrites = relevantWritesCopy;
-
-		//Project the data-structures to the relevant-threads-locks-variables.
-//		HashMap<Integer, HashSet<Integer>> relevantAfterFirst_copy = new HashMap<> (this.relevantAfterFirst);
-//		HashMap<Integer, HashSet<Integer>> relevantBeforeLast_copy = new HashMap<> (this.relevantBeforeLast);
-//		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> relevantAfterReads_copy = new HashMap<> (this.relevantAfterReads);
-//		HashMap<Integer, HashMap<Integer, HashSet<Integer>>> relevantBeforeReads_copy = new HashMap<> (this.relevantBeforeReads);
-//		HashMap<Integer, HashSet<Integer>> relevantAfterWrites_copy = new HashMap<> (this.relevantAfterWrites);
-//		HashMap<Integer, HashSet<Integer>> relevantBeforeWrites_copy = new HashMap<> (this.relevantBeforeWrites);
-//
-//		this.relevantAfterFirst = filter(relevantAfterFirst_copy, this.relevantThreadsOrLocks, this.relevantThreadsOrLocks);
-//		this.relevantBeforeLast = filter(relevantBeforeLast_copy, this.relevantThreadsOrLocks, this.relevantThreadsOrLocks);
-//		this.relevantAfterReads = filter2(relevantAfterReads_copy, this.relevantReads, this.relevantThreadsOrLocks);
-//		this.relevantBeforeReads = filter2(relevantBeforeReads_copy, this.relevantReads, this.relevantThreadsOrLocks);
-//		this.relevantAfterWrites = filter(relevantAfterWrites_copy, this.relevantWrites, this.relevantThreadsOrLocks);
-//		this.relevantBeforeWrites = filter(relevantBeforeWrites_copy, this.relevantWrites, this.relevantThreadsOrLocks);
-
-		//		this.destroyCriticalChldren();
 	}
 
-	private void computeData_allTerminals(boolean stopAfterFirstRace, boolean sanityCheck){
-		//		System.out.println("All terminals");
-
+	private void computeData_allTerminals(){
 		HashSet<Integer> tSet = new HashSet<Integer> ();
 		int rule_size = this.rule.size();
 		for(int idx = 0; idx < rule_size; idx ++){
@@ -602,28 +444,14 @@ public class NonTerminalZipHB extends SymbolZipHB {
 			}
 		}
 
-		this.initialize_data(sanityCheck);
+		this.initialize_data();
 		ZipHBStateRWClocks hbStateRW = new ZipHBStateRWClocks(tSet);
 		for(int idx = 0; idx < rule_size; idx ++){
 			TerminalZipHB term = ((TerminalZipHB) this.rule.get(idx));
 			boolean race_occured = hbStateRW.HandleSub(term.getType(), term.getThread(), term.getDecor());
 			this.hasRace = this.hasRace || race_occured;
-			if(this.hasRace && stopAfterFirstRace){
-//				System.out.println("Race found : NT " + this.getName() + " child#" + term.getName());
+			if(this.hasRace){
 				break;
-			}
-			if(sanityCheck){
-				int len_B = this.len;
-				int len_C = 1;
-				if(race_occured){
-					int x = term.getDecor();
-					Interval i = new Interval(1, len_B, len_B + 1, len_B + len_C);
-					if(!this.setRange.containsKey(x)){
-						this.setRange.put(x, new HashSet<Interval> ());
-					}
-					this.setRange.get(x).add(i);
-				}
-				this.len = len_B + len_C;
 			}
 		}
 		if(!this.hasRace){
@@ -650,12 +478,12 @@ public class NonTerminalZipHB extends SymbolZipHB {
 	}
 
 	@Override
-	public void computeData(boolean stopAfterFirstRace, boolean sanityCheck) {	
+	public void computeData() {	
 		if(this.allTerminals){
-			computeData_allTerminals(stopAfterFirstRace, sanityCheck);	
+			computeData_allTerminals();	
 		}
 		else{
-			computeData_mix(stopAfterFirstRace, sanityCheck);
+			computeData_mix();
 		}
 	}
 

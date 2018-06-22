@@ -55,7 +55,7 @@ public class NonTerminalZipLockSet extends SymbolZipLockSet {
 	}
 
 	@Override
-	public void computeData(boolean stopAfterFirstRace){
+	public void computeData(){
 		initialize_data();
 
 		HashSet<Integer> intermediateLocks = new HashSet<Integer> ();
@@ -65,9 +65,7 @@ public class NonTerminalZipLockSet extends SymbolZipLockSet {
 
 			if(newSymbol.violationFound){
 				this.violationFound = true;
-				if(stopAfterFirstRace){
-					break;
-				}
+				break;
 			}
 
 			this.relevantWrittenVars.addAll(newSymbol.relevantWrittenVars);
@@ -158,13 +156,13 @@ public class NonTerminalZipLockSet extends SymbolZipLockSet {
 
 			//Check for races
 			getRace(newSymbol);
-			if(this.violationFound && stopAfterFirstRace){
+			if(this.violationFound){
 				break;
 			}
 		}
 
 		//Now project everything to relevant sets
-		if(!this.violationFound || !stopAfterFirstRace){
+		if(!this.violationFound){
 			projectToRelevant();
 		}
 	}

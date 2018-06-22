@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.HashMap;
 
 import ziptrack.grammar.Symbol;
-import ziptrack.util.Interval;
 
 public abstract class SymbolZipHB extends Symbol {
 	protected String name;
@@ -27,11 +26,6 @@ public abstract class SymbolZipHB extends Symbol {
 
 	public HashMap<NonTerminalZipHB, Integer> parents; // For parents(p) = #of occurrences of this as a child node of p.
 	public int topologicalIndex;
-	
-	//Sanity
-	public int len;
-	public boolean crossRace;
-	public HashMap<Integer, HashSet<Interval>> setRange; // Variable ->Set of intervals
 
 	SymbolZipHB(String n){
 		super(n);
@@ -74,13 +68,9 @@ public abstract class SymbolZipHB extends Symbol {
 		hasRace = null;
 		parents = null;
 		topologicalIndex = -1;
-		
-		len = 0;
-		crossRace = false;
-		setRange = null;
 	}
 
-	public abstract void computeData(boolean stopAfterFirstRace, boolean sanityCheck);	
+	public abstract void computeData();	
 
 	private void computeRelevantVariables(){
 		this.relevantWrites = new HashSet<Integer> ();
