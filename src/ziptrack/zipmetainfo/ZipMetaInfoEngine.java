@@ -2,6 +2,7 @@ package ziptrack.zipmetainfo;
 
 public class ZipMetaInfoEngine {
 	
+	// Print meta-data about the SLP and the underlying trace.
 	public static void analyze(String mapFile, String traceFile){
 		ParseZipMetaInfo parser = new ParseZipMetaInfo();
 		parser.parse(mapFile, traceFile);

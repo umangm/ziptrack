@@ -7,6 +7,7 @@ public class PrintTrace {
 	public PrintTrace() {
 	}
 	
+	// Prints RVPredict traces in human-readable format.
 	public static void main(String[] args) {	
 		CmdOptions options = new GetOptions(args).parse();
 		ZipTrackPrintEngine engine = new ZipTrackPrintEngine(options.path, true);

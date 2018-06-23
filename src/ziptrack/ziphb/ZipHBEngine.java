@@ -7,6 +7,10 @@ import java.util.Stack;
 
 public class ZipHBEngine {
 
+	// For every symbol symb in the grammar, construct a 
+	// map symb.parents : non-terminal -> integer
+	// such that symb.parents(nt) = # of occurrences of symb 
+	// in the unique production rule of nt.
 	private static void assignParents(HashMap<String, TerminalZipHB> terminalMap, 
 			HashMap<String, NonTerminalZipHB> nonTerminalMap, SymbolZipHB start){
 		
@@ -27,6 +31,10 @@ public class ZipHBEngine {
 			}
 
 		}
+		
+		// If a terminal t is such that for every nt \in t.parents,
+		// the production rule corresponding to nt consists only of terminal symbols,
+		// we label t with the flag allParentsNative.
 		for (HashMap.Entry<String, TerminalZipHB> entry : terminalMap.entrySet()){
 			TerminalZipHB term = entry.getValue();
 			boolean allParentsNative = true;
@@ -38,7 +46,12 @@ public class ZipHBEngine {
 			term.allParentsNative = allParentsNative;
 		}
 	}
-
+	
+	// For every non-terminal nt, this function assigns a 
+	// set of symbols nt.criticalChildren such that
+	//  s \in nt.criticalChildren iff nt has the largest topological index
+	// amongst any parent of s. Here, by topological index, we mean
+	// the index of a node in a fixed topological ordering of the underlying DAG of the grammar. 
 	private static void assignCriticalChildren(ArrayList<SymbolZipHB> symbolList)
 	{
 		for(SymbolZipHB symb : symbolList){
@@ -74,6 +87,7 @@ public class ZipHBEngine {
 		stack.push(curr);
 	}
 
+	// Return the topological ordering of the symbols in the grammar.
 	private static ArrayList<SymbolZipHB> getTopologicalOrder(NonTerminalZipHB start)
 	{
 		HashSet<SymbolZipHB> visited = new HashSet<SymbolZipHB> ();
@@ -95,7 +109,7 @@ public class ZipHBEngine {
 	private static ArrayList<SymbolZipHB> initialAnalysis(ParseZipHB parser, NonTerminalZipHB start){
 		ArrayList<SymbolZipHB> inverseTopologicalSort = getTopologicalOrder(start);
 		int totalSymbols = inverseTopologicalSort.size();
-		
+	
 		assert(inverseTopologicalSort.get(totalSymbols-1) == start);
 		
 		for(int idx = totalSymbols-1; idx >= 0; idx --){
@@ -125,9 +139,14 @@ public class ZipHBEngine {
 		ParseZipHB parser = new ParseZipHB();
 		parser.parse(mapFile,traceFile);
 
+		// The "start" symbol in the context-free grammar.
 		NonTerminalZipHB start = parser.nonTerminalMap.get("0");
+		
+		// Sort the symbols in the grammar in the inverse topological ordering.
 		ArrayList<SymbolZipHB> inverseTopologicalSort = initialAnalysis(parser, start);
 		int totalSymbols = inverseTopologicalSort.size();
+		
+		// Get the topological ordering.
 		SymbolZipHB topologicalSort[] = new SymbolZipHB[totalSymbols];
 		for(int idx = 0; idx < totalSymbols; idx ++){
 			topologicalSort[idx] = inverseTopologicalSort.get(totalSymbols-idx-1);
@@ -137,6 +156,7 @@ public class ZipHBEngine {
 		
 		long startTimeAnalysis = System.currentTimeMillis();
 		boolean race = false;
+		//Analyze each of the symbols for races.
 		for(int idx = 0; idx < totalSymbols; idx ++){
 			SymbolZipHB symb = topologicalSort[idx];
 			if(symb instanceof TerminalZipHB){
@@ -144,6 +164,7 @@ public class ZipHBEngine {
 					continue;
 				}
 			}
+			// Analyze 'symb' for races.
 			symb.computeData();
 			race = symb.hasRace;
 			if(race){

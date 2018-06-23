@@ -8,6 +8,10 @@ import java.util.Stack;
 
 public class ZipLockSetEngine {
 
+	// For every symbol symb in the grammar, construct a 
+	// map symb.parents : non-terminal -> integer
+	// such that symb.parents(nt) = # of occurrences of symb 
+	// in the unique production rule of nt.
 	private static void assignParents(HashMap<String, TerminalZipLockSet> terminalMap, 
 			HashMap<String, NonTerminalZipLockSet> nonTerminalMap, SymbolZipLockSet start){
 		for (HashMap.Entry<String, TerminalZipLockSet> entry : terminalMap.entrySet()){
@@ -37,6 +41,7 @@ public class ZipLockSetEngine {
 		stack.push(curr);
 	}
 
+	// Return the topological ordering of the symbols in the grammar.
 	private static ArrayList<SymbolZipLockSet> getTopologicalOrder(NonTerminalZipLockSet start){
 		HashSet<SymbolZipLockSet> visited = new HashSet<SymbolZipLockSet> ();
 
@@ -77,10 +82,14 @@ public class ZipLockSetEngine {
 		ParseZipLockSet parser = new ParseZipLockSet();
 		parser.parse(mapFile,traceFile);
 
+		// The "start" symbol in the context-free grammar.
 		NonTerminalZipLockSet start = parser.nonTerminalMap.get("0");
 		
+		// Sort the symbols in the grammar in the inverse topological ordering.
 		ArrayList<SymbolZipLockSet> inverseTopologicalSort = initialAnalysis(parser, start);
 		int totalSymbols = inverseTopologicalSort.size();
+		
+		// Get the topological ordering.
 		SymbolZipLockSet topologicalSort[] = new SymbolZipLockSet[totalSymbols];
 		for(int idx = 0; idx < totalSymbols; idx ++){
 			topologicalSort[idx] = inverseTopologicalSort.get(totalSymbols-idx-1);
@@ -90,6 +99,7 @@ public class ZipLockSetEngine {
 
 		long startTimeAnalysis = System.currentTimeMillis();
 		boolean violationFound = false;
+		//Analyze each of the symbols for lockset violations.
 		for(int idx = 0; idx < totalSymbols; idx ++){
 			topologicalSort[idx].computeData();
 			violationFound = topologicalSort[idx].violationFound;

@@ -1,5 +1,3 @@
-
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,24 +10,32 @@ import cmd.CmdOptions;
 import cmd.GetOptions;
 import javafx.util.Pair;
 
-
+// Given an SLP S, the main function produces an equivalent SLP S'
+// by introducing new production rules for large contiguous blocks of terminals
+// present in the SLP S.
+// For example, for the rule A -> b1 . . . bk C d1 . . . dm, 
+// where bi's and dj's are terminal,
+// the following three rules are introduced
+// A -> B C D
+// B -> b1 . . . bk
+// D -> d1 . . . dm
+// where B and D are freshly intoduced non-terminals.
 public class TransformGrammar {
-	
 
 	public String eventSplitBy;
-	
+
 	public TransformGrammar(){
 	}
-	
+
 	public static boolean isTerminal(String str){
 		return str.charAt(0) == '[';
 	}
-	
+
 	public static boolean isRule(String line){
-//		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
+		//		return line.matches("^[0-9]+ -> ([\\&]?[0-9]+\\s).*");
 		return line.matches("^[0-9]+ -> ((([\\[][0-9]+[\\]])|([0-9]+))\\s).*");
 	}
-	
+
 	public static Pair<String, ArrayList<String>> processRule(String line){
 		String[] parts = line.split(" -> ");
 		String nt_name = parts[0];
@@ -37,7 +43,7 @@ public class TransformGrammar {
 		ArrayList<String> newLst = new ArrayList<String> (Arrays.asList(rule_str_lst));
 		return new Pair<String, ArrayList<String>> (nt_name, newLst);
 	}
-	
+
 	public static ArrayList<Pair<String, ArrayList<String>>> buildGrammar(String traceFile){
 		ArrayList<Pair<String, ArrayList<String>>> cfg = null;
 		try (Stream<String> stream = Files.lines(Paths.get(traceFile))) {
@@ -47,7 +53,7 @@ public class TransformGrammar {
 		}
 		return cfg;
 	}
-	
+
 	private static int transformRule(Pair<String, ArrayList<String>> nt, int freshIndex, 
 			ArrayList<Pair<String, ArrayList<String>>> newCFG, int minLengthOfTerminalSequence){
 		ArrayList<String> rule = nt.getValue();
@@ -55,7 +61,7 @@ public class TransformGrammar {
 		ArrayList<String> currRule = new ArrayList<String> ();
 		ArrayList<String> tmpNewRule = new ArrayList<String> ();
 		boolean insideRule = false;
-		
+
 		for(String symb : rule){
 			if(!insideRule){
 				if(isTerminal(symb)){
@@ -87,7 +93,7 @@ public class TransformGrammar {
 				}
 			}
 		}
-		
+
 		if(insideRule){
 			if(tmpNewRule.size() >= minLengthOfTerminalSequence && tmpNewRule.size() < rule_len){
 				String newNTName = Integer.toString(freshIndex);
@@ -104,7 +110,7 @@ public class TransformGrammar {
 		newCFG.add(newNT);
 		return freshIndex;
 	}
-	
+
 	public static ArrayList<Pair<String, ArrayList<String>>> transformGrammar_helper(ArrayList<Pair<String, 
 			ArrayList<String>>> cfg, int minLengthOfTerminalSequence)
 	{
@@ -116,16 +122,16 @@ public class TransformGrammar {
 			}
 		}
 		freshIndex = freshIndex + 1;
-		
+
 		ArrayList<Pair<String, ArrayList<String>>> newCFG = new ArrayList<Pair<String, ArrayList<String>>> ();
-		
+
 		for(Pair<String, ArrayList<String>> nt : cfg){
 			freshIndex = transformRule(nt, freshIndex, newCFG, minLengthOfTerminalSequence);
 		}
-		
+
 		return newCFG;
 	}
-	
+
 	public static void transformGrammar(String traceFile, int minLengthOfTerminalSequence){
 		ArrayList<Pair<String, ArrayList<String>>> cfg = buildGrammar(traceFile);
 		ArrayList<Pair<String, ArrayList<String>>> newCFG = transformGrammar_helper(cfg, minLengthOfTerminalSequence);
@@ -138,12 +144,7 @@ public class TransformGrammar {
 			System.out.print("\n");
 		}
 	}
-	
-//	public static void demo(){
-//		String traceFile = "/Users/umang/onedrive/ziptrack/Nov-11-2016/grammar_orig/boundedbuffer/grammar.shared.txt";
-//		TransformGrammar.transformGrammar(traceFile, 2);
-//	}
-//	
+
 	public static void main(String args[]){
 		CmdOptions options = new GetOptions(args).parse();
 		TransformGrammar.transformGrammar(options.trace_file, 2);
