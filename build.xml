@@ -50,34 +50,4 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="ZipLockSet">
-        <java classname="ZipLockSet" failonerror="true" fork="yes">
-            <arg line="-m /Users/umang/Repositories/compressedtraces/example/rebuttal/bin_files/Test1/map.all.txt -t/Users/umang/Repositories/ziptrack/public/ziptrack/v2.txt"/>
-            <classpath refid="public_ziptrack.classpath"/>
-        </java>
-    </target>
-    <target name="ZipTransformGrammar">
-        <java classname="TransformGrammar" failonerror="true" fork="yes">
-            <arg line="-m /Users/umang/Repositories/compressedtraces/example/rebuttal/bin_files/Test1/map.all.txt -t /Users/umang/Repositories/ziptrack/public/ziptrack/v2.txt"/>
-            <classpath refid="public_ziptrack.classpath"/>
-        </java>
-    </target>
-    <target name="ZipMetaInfo">
-        <java classname="ZipMetaInfo" failonerror="true" fork="yes">
-            <arg line="-m /Users/umang/Repositories/compressedtraces/example/rebuttal/bin_files/Test1/map.all.txt -t /Users/umang/Repositories/ziptrack/public/ziptrack/v2.txt"/>
-            <classpath refid="public_ziptrack.classpath"/>
-        </java>
-    </target>
-    <target name="ZipHB">
-        <java classname="ZipHB" failonerror="true" fork="yes">
-            <arg line="-m /Users/umang/Repositories/compressedtraces/example/rebuttal/bin_files/Test1/map.all.txt -t /Users/umang/Repositories/ziptrack/public/ziptrack/v2.txt"/>
-            <classpath refid="public_ziptrack.classpath"/>
-        </java>
-    </target>
-    <target name="PrintTrace (1)">
-        <java classname="PrintTrace" failonerror="true" fork="yes">
-            <arg line="-p=/Users/umang/Repositories/ziptrack/testing/array"/>
-            <classpath refid="public_ziptrack.classpath"/>
-        </java>
-    </target>
 </project>
