@@ -75,17 +75,17 @@ cp /path/to/base_folder/sub_folder/slp_new.txt /path/to/base_folder/sub_folder/s
 ```
 
 2. Run ZipHB :
-
+```
 java -Xmx10000m -Xms10000m -classpath /path/to/ziptrack/bin:/path/to/ziptrack/lib/* ZipHB -m /path/to/base_folder/sub_folder/map.shared.txt -t /path/to/base_folder/sub_folder/slp.txt  -s 
-
+```
 3. Run ZipLockSet :
-
+```
 java -Xmx10000m -Xms10000m -classpath /path/to/ziptrack/bin:/path/to/ziptrack/lib/* ZipLockSet -m /path/to/base_folder/sub_folder/map.shared.txt -t /path/to/base_folder/sub_folder/slp.txt  -s 
-
+```
 4. Run ZipMetaInfo :
-
+```
 java -Xmx10000m -Xms10000m -classpath /path/to/ziptrack/bin:/path/to/ziptrack/lib/* ZipMetaInfo -m /path/to/base_folder/sub_folder/map.shared.txt -t /path/to/base_folder/sub_folder/slp.txt
-
+```
 ### Run analyses on Uncompressed traces
 
 We will use RAPID for this.
