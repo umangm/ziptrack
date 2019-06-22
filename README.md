@@ -1,3 +1,5 @@
+<a href="url"><img src="ziptrack_logo.png" align="right" width="200" ></a>
+
 # ZipTrack
 
 ## Description
@@ -87,6 +89,7 @@ java -Xmx10000m -Xms10000m -classpath /path/to/ziptrack/ziptrack.jar:/path/to/zi
 4. Run ZipMetaInfo :
 
 java -Xmx10000m -Xms10000m -classpath /path/to/ziptrack/ziptrack.jar:/path/to/ziptrack/lib/* ZipMetaInfo -m /path/to/base_folder/sub_folder/map.shared.txt -t /path/to/base_folder/sub_folder/slp.txt
+
 
 ### Run analyses on Uncompressed traces
 
