@@ -28,7 +28,8 @@ These compressed traces can then be analyzed by ZipTrack.
 
 ### Generating traces:
 
-1. Download and install [RVPredict](https://runtimeverification.com/predict/).
+1. ~~Download and install [RVPredict](https://runtimeverification.com/predict/).~~
+Download [this](https://uofi.box.com/v/rvpredict) version of RVPredict -- This version allows us to log traces.
 2. Run the logger :
 
 ```
