@@ -22,7 +22,10 @@ The following classes let you perform different analyses:
 ## Usage
 
 In order to use ZipTrack, you need traces.
-We use [RVPredict](https://runtimeverification.com/predict/)'s logger functionality for this.
+We use [RVPredict](https://runtimeverification.com/predict/)'s logger functionality for this.  
+**Update** - One should use [this](https://uofi.box.com/v/rvpredict) version of RVPredict for logging traces.
+
+
 We then compress these traces as SLPs, using [Sequitur](https://github.com/craignm/sequitur).
 These compressed traces can then be analyzed by ZipTrack.
 
