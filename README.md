@@ -3,8 +3,9 @@
 # ZipTrack
 
 ## Description
-ZipTrack analyses traces of concurrent programs, compressed as SLPs (straight line programs)
-and checks if there is a race.
+ZipTrack analyses traces of concurrent programs, compressed as SLPs (straight line programs) and checks if there is a data race.  
+It is based on [Data Race Detection On Compressed Traces, Kini et al, FSE 2018](https://dl.acm.org/citation.cfm?id=3236025). The original artifact submitted for ZipTrack can be found [here](https://uofi.box.com/v/ziptrack-fse18-artifact). A link to the original traces used can be found in the artifact.  
+
 ZipTrack performs two analyses :
 
 	1. HB race detection
