@@ -149,7 +149,7 @@ java -Xmx10000m -Xms10000m -classpath /path/to/rapid/rapid.jar:/path/to/rapid/li
 java -Xmx10000m -Xms10000m -classpath /path/to/rapid/rapid.jar:/path/to/rapid/lib/* Goldilocks -p=/path/to/base_folder/sub_folder -f=rv -s
 ```
 
-4. Run Goldilocks algorithm :
+4. Run Lockset algorithm :
 
 ```
 java -Xmx10000m -Xms10000m -classpath /path/to/rapid/rapid.jar:/path/to/rapid/lib/* LockSet -p=/path/to/base_folder/sub_folder -f=rv -s
